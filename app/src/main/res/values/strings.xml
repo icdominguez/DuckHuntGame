@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">LoginActivity</string>
+    <string name="app_name">DuckHunt</string>
     <string name="login_button_startGame">Iniciar Juego</string>
     <string name="login_text_username">Nombre de usuario</string>
     <string name="login_username_empty">El nombre de usuario es obligatorio</string>
@@ -9,4 +9,7 @@
     <string name="game_gameOver">Game over</string>
     <string name="game_hunted_ducks">Has conseguido cazar&#160;</string>
     <string name="game_duck">&#160;patos</string>
+
+    <string name="title_activity_ranking">RankingActivity</string>
+    <string name="login_existing_user">El usuario ya existe en BBDD</string>
 </resources>

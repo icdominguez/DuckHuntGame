@@ -1,9 +1,10 @@
-package com.icdominguez.duckhunt;
+package com.icdominguez.duckhunt.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Point;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -14,6 +15,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.icdominguez.duckhunt.R;
 import com.icdominguez.duckhunt.common.Constants;
 
 import java.util.Random;
@@ -27,11 +30,15 @@ public class GameActivity extends AppCompatActivity {
     int screenHeight;
     Random random;
     boolean gameOver = false;
+    String userId, username;
+    FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
+
+        db = FirebaseFirestore.getInstance();
 
         findViews();
         events();
@@ -44,7 +51,8 @@ public class GameActivity extends AppCompatActivity {
         tvUsername.setTypeface(typeface);
 
         Bundle extras = getIntent().getExtras();
-        String username = extras.getString(Constants.EXTRA_USERNAME);
+        username = extras.getString(Constants.EXTRA_USERNAME);
+        userId = extras.getString(Constants.EXTRA_ID);
         tvUsername.setText(username);
 
         moveDuck();
@@ -61,6 +69,7 @@ public class GameActivity extends AppCompatActivity {
                 tvTimer.setText("0s");
                 gameOver = true;
                 showDialogGameOver();
+                saveResultFireStore();
             }
         }.start();
     }
@@ -79,10 +88,11 @@ public class GameActivity extends AppCompatActivity {
                 moveDuck();
             }
         });
-        builder.setNegativeButton(R.string.game_exit, new DialogInterface.OnClickListener() {
+        builder.setNegativeButton("Ver ranking", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 dialog.dismiss();
-                finish();
+                Intent i = new Intent(GameActivity.this, RankingActivity.class);
+                startActivity(i);
             }
         });
 
@@ -144,6 +154,10 @@ public class GameActivity extends AppCompatActivity {
         // We use random numbers to move the duck to that position
         ivDuck.setX(randomX);
         ivDuck.setY(randomY);
+    }
+
+    private void saveResultFireStore() {
+        db.collection("users").document(userId).update("ducks", counter);
     }
 
 }
